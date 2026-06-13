@@ -1,0 +1,15 @@
+{
+	"name": "deepikafactoryazure",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6f2e5ef7-fd50-4b3c-9e5a-7550b95816f2",
+		"tenantId": "8baee1be-3df4-4731-99f9-bc879861f801"
+	}
+}
