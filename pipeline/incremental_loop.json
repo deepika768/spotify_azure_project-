@@ -296,7 +296,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@item().table",
+														"value": "@{item().table}_cdc",
 														"type": "Expression"
 													},
 													"file": "empty.json"
@@ -327,9 +327,16 @@
 			{
 				"name": "Alerts",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed",
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -337,7 +344,15 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://prod-08.northcentralus.logic.azure.com:443/workflows/c5ea6714a19649c19967afb05ce97694/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=lP65gkdGZH6Ki4KQqppRKCX1QbTTPIwuFCQsJ6FFqFQ",
+					"body": {
+						"value": "{\n  \"pipeline_name\": \"@{pipeline().Pipeline}\",\n  \"pipeline_runID\": \"@{pipeline().RunId}\"\n}",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
