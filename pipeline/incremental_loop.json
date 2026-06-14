@@ -43,7 +43,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "select * from @{item().schemaa}.@{item().table} \nwhere @{item().cdc_column} > '@{if(empty(item().from_date),activity('last_cdc').output.firstRow.cdc,item().from_date)}'",
+										"value": "select * from @{item().schema}.@{item().table} \nwhere @{item().cdc_column} > '@{if(empty(item().from_date),activity('last_cdc').output.firstRow.cdc,item().from_date)}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -230,7 +230,7 @@
 												{
 													"type": "Query",
 													"text": {
-														"value": "select max(@{item().cdc_column}) as cdc \n       from @{item().schemaa}.@{item().table}",
+														"value": "select max(@{item().cdc_column}) as cdc \n       from @{item().schema}.@{item().table}",
 														"type": "Expression"
 													}
 												}
@@ -295,7 +295,10 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": "bronze",
-													"folder": "cdc",
+													"folder": {
+														"value": "@item().table",
+														"type": "Expression"
+													},
 													"file": "empty.json"
 												}
 											}
@@ -306,7 +309,10 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": "bronze",
-													"folder": "cdc",
+													"folder": {
+														"value": "@item().table",
+														"type": "Expression"
+													},
 													"file": "cdc.json"
 												}
 											}
@@ -317,6 +323,21 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Alerts",
+				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {
